@@ -88,6 +88,10 @@ public class AccountLoginModule {
 			}
 		}
 	}
+	
+	public static String getUsername() {
+		return usernames.fileAsList.get(getAccountIndex());
+	}
 
 	private void initalizeFileModifiers() {
 		//initializes FileReading
