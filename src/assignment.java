@@ -1,5 +1,6 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class assignment {
@@ -7,7 +8,10 @@ public class assignment {
 //	private assignmentType assignmentWorth;
 	
 	private FileWriter assignmentFileWriter;
+	private ArrayList<String> userGradesRemoveArrayList = new ArrayList<String>();
 	private static FileReading assignmentFileReader;
+	private static FileReading summativeFileReading;
+	private static FileReading performanceFileReading;
 	private static double summativeGradeAverage;
 	private static double performanceGradeAverage;
 	private static double totalAverage;
@@ -23,10 +27,10 @@ public class assignment {
 		//Gets average grade for summative assignments
 		
 		
-		assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+		summativeFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
 		
 		//Gets data of user's grades
-		String userSummativeGradeString = assignmentFileReader.fileAsList.get(AccountLoginModule.getAccountIndex());
+		String userSummativeGradeString = summativeFileReading.fileAsList.get(AccountLoginModule.getAccountIndex());
 		
 		//String array to split grades
 		String[] userSummativeGradeStringArray = userSummativeGradeString.split(",");
@@ -52,10 +56,10 @@ public class assignment {
 		//Gets average grade for performance assignments
 
 	
-		assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+		performanceFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
 		
 		//Gets data of user's grades
-		String userPerformanceGradeString = assignmentFileReader.fileAsList.get(AccountLoginModule.getAccountIndex());
+		String userPerformanceGradeString = performanceFileReading.fileAsList.get(AccountLoginModule.getAccountIndex());
 		
 		//String array to split grades
 		String[] userPerformanceGradeStringArray = userPerformanceGradeString.split(",");
@@ -80,62 +84,117 @@ public class assignment {
 		
 	}
 	
-	public assignment(double scoredPoints, assignmentType assignmentWorth) {
-		/*
-		this.scoredPoints = scoredPoints;
-		this.assignmentWorth = assignmentWorth;
-		*/
-		//Constructor initializers
+	public assignment(double scoredPoints, assignmentType assignmentWorth, assignmentAction action) {
 		
-		if(assignmentWorth == assignmentType.PERFORMANCE) {
-			//assignmentFileWriter = new FileWriter("C:\\Users\\inivi\\git\\repository\\Grade Calculator\\src\\performanceTasks.txt", true);
-			//assignmentFileReader = new FileReading("C:\\Users\\inivi\\git\\repository\\Grade Calculator\\src\\performanceTasks.txt");
-			assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+		if(action == assignmentAction.ADD) {
+			//constructs FileReader and Writer
+			if(assignmentWorth == assignmentType.PERFORMANCE) {
+				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				try {
+					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				} catch (IOException e) {
+					System.out.println("File not found; redirect or make necessary files.");
+					System.exit(0);
+				}
+			}
+			
+			if(assignmentWorth == assignmentType.SUMMATIVE) {
+				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+				try {
+					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+				} catch (IOException e) {
+					System.out.println("File not found; redirect or make necessary files.");
+					System.exit(0);
+				}
+			}
+			
+			//Creates more lines in the file so there is space to append the specified location
+			while(assignmentFileReader.fileAsList.size() <= AccountLoginModule.getAccountIndex()) {
+				assignmentFileReader.fileAsList.add("");
+			}
+			//appends the newly inputed grade onto the string of grades that were already there
+			assignmentFileReader.fileAsList.add(AccountLoginModule.getAccountIndex(), assignmentFileReader.fileAsList.get(AccountLoginModule.getAccountIndex()) + String.valueOf(scoredPoints) + ",");
+			if(GradeCalculatorMain.assignmentCount > 1) {
+				//removes the old string of grades (the old one didn't have the latest added grade)
+				assignmentFileReader.fileAsList.remove(AccountLoginModule.getAccountIndex()+1);
+			}
+			
+			// uses for loop to iterate and write to file
+			for(int i = 0; i < assignmentFileReader.fileAsList.size(); i++) {
+				try {
+					assignmentFileWriter.write(assignmentFileReader.fileAsList.get(i) + "\n");
+				} catch (IOException e) {
+					System.out.println("File not found; redirect or make necessary files.");
+					System.exit(0);
+				}
+			}
+			
+			//closes FileWriter to save the changes
 			try {
-				assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				assignmentFileWriter.close();
 			} catch (IOException e) {
 				System.out.println("File not found; redirect or make necessary files.");
 				System.exit(0);
 			}
 		}
 		
-		if(assignmentWorth == assignmentType.SUMMATIVE) {
-			//assignmentFileWriter = new FileWriter("C:\\Users\\inivi\\git\\repository\\Grade Calculator\\src\\summativeTasks.txt", true);
-			//assignmentFileReader = new FileReading("C:\\Users\\inivi\\git\\repository\\Grade Calculator\\src\\summativeTasks.txt");
-			assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
-			try {
-				assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
-			} catch (IOException e) {
-				System.out.println("File not found; redirect or make necessary files.");
-				System.exit(0);
+		
+		if(action == assignmentAction.REMOVE) {
+			//Constructs file reader and FileWriter
+			if(assignmentWorth == assignmentType.PERFORMANCE) {
+				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				try {
+					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				} catch (IOException e) {
+					System.out.println("File not found; redirect or make necessary files.");
+					System.exit(0);
+				}
 			}
-		}
-		
-		
-		while(assignmentFileReader.fileAsList.size() <= AccountLoginModule.getAccountIndex()) {
-			assignmentFileReader.fileAsList.add("");
-		}
-		
-		assignmentFileReader.fileAsList.add(AccountLoginModule.getAccountIndex(), assignmentFileReader.fileAsList.get(AccountLoginModule.getAccountIndex()) + String.valueOf(scoredPoints) + ",");
-		if(GradeCalculatorMain.assignmentCount > 1) {
-			assignmentFileReader.fileAsList.remove(AccountLoginModule.getAccountIndex()+1);
-		}
-		
-		for(int i = 0; i < assignmentFileReader.fileAsList.size(); i++) {
-			try {
-				assignmentFileWriter.write(assignmentFileReader.fileAsList.get(i) + "\n");
-			} catch (IOException e) {
-				System.out.println("File not found; redirect or make necessary files.");
-				System.exit(0);
+			
+			else if(assignmentWorth == assignmentType.SUMMATIVE) {
+				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+				try {
+					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+				} catch (IOException e) {
+					System.out.println("File not found; redirect or make necessary files.");
+					System.exit(0);
+				}
 			}
+			
+			
+			String userGradesRemoveString = assignmentFileReader.fileAsList.get(AccountLoginModule.getAccountIndex());
+			String[] userGradesRemoveArray = userGradesRemoveString.split(",");
+			
+			if(!userGradesRemoveString.contains(String.valueOf(scoredPoints))) {
+				System.out.println("The grade and type of assesment you have inputed is not here.");
+
+			} else {
+				
+				for (String grade: userGradesRemoveArray) {
+					if(!grade.equals(String.valueOf(scoredPoints))) {
+						userGradesRemoveArrayList.add(grade);
+					}
+				}
+				
+				userGradesRemoveString = "";
+				
+				for(String grade: userGradesRemoveArrayList) {
+					userGradesRemoveString += (grade + ",");
+				}
+				
+				try {
+					for(int i = 0; i < AccountLoginModule.getAccountIndex(); i++) {
+						assignmentFileWriter.write("\n");
+					}
+					
+					assignmentFileWriter.write(userGradesRemoveString);
+					assignmentFileWriter.close();
+				} catch (IOException e) {
+					System.out.println("File error");
+				}
+				
+			}
+			
 		}
-		
-		try {
-			assignmentFileWriter.close();
-		} catch (IOException e) {
-			System.out.println("File not found; redirect or make necessary files.");
-			System.exit(0);
-		}
-		
 	}
 }
