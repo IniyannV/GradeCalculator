@@ -1,7 +1,10 @@
 import java.io.FileNotFoundException;
+import java.lang.Math;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import javax.imageio.IIOException;
@@ -23,9 +26,10 @@ public class GradeCalculatorMain {
 	static int assignmentCount;
 	static int mainLoopUserAction;
 	static int addGradesCount;
+	private static ArrayList<Double> predictionGradeArrayList = new ArrayList<Double>();
+	private static ArrayList<assignmentType> predictionGradeTypeArrayList = new ArrayList<assignmentType>();
 	private static int removeGradesCount;
-	private static FileReading testFileReading;
-	private static FileWriter testFileWriter;
+	private static int predictGradesCount;
 	
 	
 	private static void initalizeObjects() {
@@ -49,6 +53,7 @@ public class GradeCalculatorMain {
 		} while (!accLoginModule.loggedIn());
 	}
 	
+	@SuppressWarnings("resource")
 	private static void mainLoop() {
 		System.out.println("Welcome " + AccountLoginModule.getUsername());
 		
@@ -98,13 +103,56 @@ public class GradeCalculatorMain {
 	
 
 	private static void predictGrades() {
+		do {
+			try {
+				System.out.println("Amount of grades to add for PREDICTION: ");
+				predictGradesCount = (new Scanner(System.in)).nextInt();
+			} catch (InputMismatchException e) {
+				System.out.println("Please enter a number greater than 0");
+				System.out.println("************************");
+			}
+		} while (predictGradesCount < 0);
+		
+		predictionGradeArrayList.clear();
+		predictionGradeTypeArrayList.clear();
+		
+		for(int i = 0; i < predictGradesCount; i++) {
+			System.out.println("Enter grade: ");
+			scoredPoints = (new Scanner(System.in)).nextDouble();
+			assignmentCount++;
+			
+			do {
+				System.out.println("Summative or Performance (s or p):");
+				assignmentTypeString = (new Scanner(System.in)).nextLine();
+			} while ((!assignmentTypeString.toLowerCase().equals("s")) && (!assignmentTypeString.toLowerCase().equals("p")));
+			
+			if(assignmentTypeString.toLowerCase().equals("s"))
+				assignmentWorth = assignmentType.SUMMATIVE;
+			
+			if(assignmentTypeString.toLowerCase().equals("p"))
+				assignmentWorth = assignmentType.PERFORMANCE;
+			
+			predictionGradeArrayList.add(scoredPoints);
+			predictionGradeTypeArrayList.add(assignmentWorth);
+			
+			assignment grade = new assignment(scoredPoints, assignmentWorth, assignmentAction.ADD);
+			
+			System.out.println("Succesfully added");
+			System.out.println("************************");
+		}
+		
+		System.out.println("New average: " + getGradeAverage());
+		
+		for (int i = 0; i < predictGradesCount; i++) {
+			assignment grade = new assignment(predictionGradeArrayList.get(i), predictionGradeTypeArrayList.get(i), assignmentAction.REMOVE);
+		}
 		
 		
 	}
 
 	private static double getGradeAverage() {
 		try {
-			return assignment.getAverage();
+			return (Math.round(assignment.getAverage() * 100))/100.0; 
 		} catch(IndexOutOfBoundsException e) {
 			return 0.0;
 		} catch (NumberFormatException e) {
@@ -119,7 +167,7 @@ public class GradeCalculatorMain {
 	private static void removeGrades() {
 		do {
 			try {
-				System.out.println("How many grades would you like to REMOVE (number greater than 0): ");
+				System.out.println("Amount of grades to REMOVE: ");
 				removeGradesCount = (new Scanner(System.in)).nextInt();
 			} catch (InputMismatchException e) {
 				System.out.println("Please enter a number greater than 0");
@@ -128,12 +176,12 @@ public class GradeCalculatorMain {
 		} while (removeGradesCount < 0);
 		
 		for(int i = 0; i < removeGradesCount; i++) {
-			System.out.println("Enter your grade (out of 100) on assignment you would like to REMOVE");
+			System.out.println("Enter grade: ");
 			scoredPoints = (new Scanner(System.in)).nextDouble();
 			assignmentCount++;
 			
 			do {
-				System.out.println("Summative or performance task (type s or p):");
+				System.out.println("Summative or Performance (s or p):");
 				assignmentTypeString = (new Scanner(System.in)).nextLine();
 			} while ((!assignmentTypeString.toLowerCase().equals("s")) && (!assignmentTypeString.toLowerCase().equals("p")));
 			
@@ -144,20 +192,22 @@ public class GradeCalculatorMain {
 				assignmentWorth = assignmentType.PERFORMANCE;
 			
 			assignment grade = new assignment(scoredPoints, assignmentWorth, assignmentAction.REMOVE);
+			System.out.println("********************");
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private static void throwFileDirectoryErrors() {
 		try {
-			testFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
-			testFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
-			testFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt");
-			testFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt");
+			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt");
+			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt");
 			
-			testFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt", true);
-			testFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt", true);
-			testFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt", true);
-			testFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt", true);
+			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt", true);
+			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt", true);
+			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt", true);
+			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt", true);
 		} catch (Exception e) {
 			System.out.println("One or more file directories have not been configured properly \nPlease redirect file directories to the correct locations.");
 			System.exit(0);
@@ -168,7 +218,7 @@ public class GradeCalculatorMain {
 		
 		do {
 			try {
-				System.out.println("How many grades would you like to ADD (number greater than 0): ");
+				System.out.println("Amount of grades to ADD: ");
 				addGradesCount = (new Scanner(System.in)).nextInt();
 			} catch (InputMismatchException e) {
 				System.out.println("Please enter a number greater than 0");
@@ -178,12 +228,12 @@ public class GradeCalculatorMain {
 		
 		assignmentCount = 1;
 		for(int i = 0; i < addGradesCount; i++) {
-			System.out.println("Enter your grade (out of 100) on assignment #" + assignmentCount + ":");
+			System.out.println("Enter grade:");
 			scoredPoints = (new Scanner(System.in)).nextDouble();
 			assignmentCount++;
 			
 			do {
-				System.out.println("Summative or performance task (type s or p):");
+				System.out.println("Summative or Performance (s or p):");
 				assignmentTypeString = (new Scanner(System.in)).nextLine();
 			} while ((!assignmentTypeString.toLowerCase().equals("s")) && (!assignmentTypeString.toLowerCase().equals("p")));
 			

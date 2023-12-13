@@ -1,6 +1,9 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.management.loading.PrivateClassLoader;
 
 
 public class assignment {
@@ -161,7 +164,6 @@ public class assignment {
 				}
 			}
 			
-			
 			String userGradesRemoveString = assignmentFileReader.fileAsList.get(AccountLoginModule.getAccountIndex());
 			String[] userGradesRemoveArray = userGradesRemoveString.split(",");
 			
@@ -170,11 +172,17 @@ public class assignment {
 
 			} else {
 				
+				boolean deletedGrade = false;
+				
 				for (String grade: userGradesRemoveArray) {
-					if(!grade.equals(String.valueOf(scoredPoints))) {
+					System.out.println(deletedGrade);
+					if(!grade.equals(String.valueOf(scoredPoints)) || deletedGrade) {
 						userGradesRemoveArrayList.add(grade);
+					} else {
+						deletedGrade = true;
 					}
 				}
+				
 				
 				userGradesRemoveString = "";
 				
@@ -182,12 +190,14 @@ public class assignment {
 					userGradesRemoveString += (grade + ",");
 				}
 				
+				
+				assignmentFileReader.fileAsList.set(AccountLoginModule.getAccountIndex(), userGradesRemoveString);
+				
 				try {
-					for(int i = 0; i < AccountLoginModule.getAccountIndex(); i++) {
-						assignmentFileWriter.write("\n");
+					for(int i = 0; i < assignmentFileReader.fileAsList.size(); i++) {
+						assignmentFileWriter.write(assignmentFileReader.fileAsList.get(i) + "\n");
 					}
 					
-					assignmentFileWriter.write(userGradesRemoveString);
 					assignmentFileWriter.close();
 				} catch (IOException e) {
 					System.out.println("File error");
