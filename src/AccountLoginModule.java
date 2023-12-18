@@ -98,8 +98,8 @@ public class AccountLoginModule {
 		//usernames = new FileReading("C:\\Users\\inivi\\git\\repository\\Grade Calculator\\src\\usernames.txt");
 		//passwords = new FileReading("C:\\Users\\inivi\\git\\repository\\Grade Calculator\\src\\passwords.txt");
 		
-		usernames = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt");
-		passwords = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt");
+		usernames = new FileReading(FileDirectories.fileDirectories.get("usernames"));
+		passwords = new FileReading(FileDirectories.fileDirectories.get("performance"));
 		
 		//initializes fileWriiter
 //		try {
@@ -110,8 +110,8 @@ public class AccountLoginModule {
 //		}
 		
 		try {
-			usernameWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt", true);
-			passwordWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt", true);
+			usernameWriter = new FileWriter(FileDirectories.fileDirectories.get("usernames"), true);
+			passwordWriter = new FileWriter(FileDirectories.fileDirectories.get("passwords"), true);
 		} catch (Exception e) {
 			System.out.println(e);
 		}

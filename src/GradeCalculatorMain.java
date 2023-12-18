@@ -39,7 +39,7 @@ public class GradeCalculatorMain {
 	
 	public static void main(String[] args) {
 		initalizeObjects();
-		throwFileDirectoryErrors();
+		FileDirectories.createFileDirectoriesHashMap();
 		
 		loginLoop();
 		mainLoop();
@@ -196,23 +196,6 @@ public class GradeCalculatorMain {
 		}
 	}
 	
-	@SuppressWarnings("resource")
-	private static void throwFileDirectoryErrors() {
-		try {
-			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
-			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
-			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt");
-			new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt");
-			
-			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt", true);
-			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt", true);
-			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/usernames.txt", true);
-			new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/passwords.txt", true);
-		} catch (Exception e) {
-			System.out.println("One or more file directories have not been configured properly \nPlease redirect file directories to the correct locations.");
-			System.exit(0);
-		}
-	}
 	
 	private static void addGrades() {
 		

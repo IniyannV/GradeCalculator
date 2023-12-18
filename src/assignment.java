@@ -30,7 +30,7 @@ public class assignment {
 		//Gets average grade for summative assignments
 		
 		
-		summativeFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+		summativeFileReading = new FileReading(FileDirectories.fileDirectories.get("summative"));
 		
 		//Gets data of user's grades
 		String userSummativeGradeString = summativeFileReading.fileAsList.get(AccountLoginModule.getAccountIndex());
@@ -59,7 +59,7 @@ public class assignment {
 		//Gets average grade for performance assignments
 
 	
-		performanceFileReading = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+		performanceFileReading = new FileReading(FileDirectories.fileDirectories.get("performance"));
 		
 		//Gets data of user's grades
 		String userPerformanceGradeString = performanceFileReading.fileAsList.get(AccountLoginModule.getAccountIndex());
@@ -92,9 +92,9 @@ public class assignment {
 		if(action == assignmentAction.ADD) {
 			//constructs FileReader and Writer
 			if(assignmentWorth == assignmentType.PERFORMANCE) {
-				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				assignmentFileReader = new FileReading(FileDirectories.fileDirectories.get("performance"));
 				try {
-					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+					assignmentFileWriter = new FileWriter(FileDirectories.fileDirectories.get("performance"));
 				} catch (IOException e) {
 					System.out.println("File not found; redirect or make necessary files.");
 					System.exit(0);
@@ -102,9 +102,9 @@ public class assignment {
 			}
 			
 			if(assignmentWorth == assignmentType.SUMMATIVE) {
-				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+				assignmentFileReader = new FileReading(FileDirectories.fileDirectories.get("summative"));
 				try {
-					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+					assignmentFileWriter = new FileWriter(FileDirectories.fileDirectories.get("summative"));
 				} catch (IOException e) {
 					System.out.println("File not found; redirect or make necessary files.");
 					System.exit(0);
@@ -145,9 +145,9 @@ public class assignment {
 		if(action == assignmentAction.REMOVE) {
 			//Constructs file reader and FileWriter
 			if(assignmentWorth == assignmentType.PERFORMANCE) {
-				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+				assignmentFileReader = new FileReading(FileDirectories.fileDirectories.get("performance"));
 				try {
-					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/performanceTasks.txt");
+					assignmentFileWriter = new FileWriter(FileDirectories.fileDirectories.get("performance"));
 				} catch (IOException e) {
 					System.out.println("File not found; redirect or make necessary files.");
 					System.exit(0);
@@ -155,9 +155,9 @@ public class assignment {
 			}
 			
 			else if(assignmentWorth == assignmentType.SUMMATIVE) {
-				assignmentFileReader = new FileReading("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+				assignmentFileReader = new FileReading(FileDirectories.fileDirectories.get("summative"));
 				try {
-					assignmentFileWriter = new FileWriter("/Users/iniyann/eclipse-workspace/Grade Calculator/src/summativeTasks.txt");
+					assignmentFileWriter = new FileWriter(FileDirectories.fileDirectories.get("summative"));
 				} catch (IOException e) {
 					System.out.println("File not found; redirect or make necessary files.");
 					System.exit(0);
